@@ -12,11 +12,11 @@ import (
 )
 
 type DeviceInfo struct {
-	MacAddress string
-	Ram        string
-	Cpu        string
-	User       string
-	Path       string
+	MacAddress  string
+	Ram         string
+	Cpu         string
+	User        string
+	Path        string
 	FingerPrint string
 }
 
@@ -72,7 +72,7 @@ func GetSystemInfo() DeviceInfo {
 
 		// Get home directory path
 		info.Path = os.Getenv("USERPROFILE")
-		hash  := HashDeviceInfo(info)
+		hash := HashDeviceInfo(info)
 		info.FingerPrint = hash
 		return info
 	} else {
@@ -91,14 +91,14 @@ func GetSystemInfo() DeviceInfo {
 
 		// Get home directory path
 		info.Path = os.Getenv("HOME")
-		hash  := HashDeviceInfo(info)
+		hash := HashDeviceInfo(info)
 		info.FingerPrint = hash
 		return info
 	}
 
 }
 
-func HashDeviceInfo(data DeviceInfo) (string) {
+func HashDeviceInfo(data DeviceInfo) string {
 	// Concatenate the strings
 	concatenatedString := data.MacAddress + data.Ram + data.Cpu + data.User + data.Path
 	// Hash the concatenated string using SHA-256
@@ -107,4 +107,3 @@ func HashDeviceInfo(data DeviceInfo) (string) {
 	hash := hex.EncodeToString(hasher.Sum(nil))
 	return hash
 }
-
