@@ -17,6 +17,7 @@ type DeviceInfo struct {
 	Cpu        string
 	User       string
 	Path       string
+	FingerPrint string
 }
 
 func IsVirtualInterface(name string) bool {
@@ -71,7 +72,8 @@ func GetSystemInfo() DeviceInfo {
 
 		// Get home directory path
 		info.Path = os.Getenv("USERPROFILE")
-
+		hash  := HashDeviceInfo(info)
+		info.FingerPrint = hash
 		return info
 	} else {
 		ramCmd = exec.Command("grep", "MemTotal", "/proc/meminfo")
@@ -89,21 +91,20 @@ func GetSystemInfo() DeviceInfo {
 
 		// Get home directory path
 		info.Path = os.Getenv("HOME")
-
+		hash  := HashDeviceInfo(info)
+		info.FingerPrint = hash
 		return info
 	}
 
 }
 
-func HashDeviceInfo(data DeviceInfo) (string, error) {
+func HashDeviceInfo(data DeviceInfo) (string) {
 	// Concatenate the strings
 	concatenatedString := data.MacAddress + data.Ram + data.Cpu + data.User + data.Path
-	fmt.Println(data.Path)
 	// Hash the concatenated string using SHA-256
 	hasher := sha256.New()
 	hasher.Write([]byte(concatenatedString))
 	hash := hex.EncodeToString(hasher.Sum(nil))
-
-	return hash, nil
+	return hash
 }
 
