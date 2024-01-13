@@ -19,7 +19,7 @@ type DeviceInfo struct {
 	Path       string
 }
 
-func isVirtualInterface(name string) bool {
+func IsVirtualInterface(name string) bool {
 	virtualInterfaceKeywords := []string{"virtual", "pseudo", "loopback", "tunnel", "software"}
 	for _, keyword := range virtualInterfaceKeywords {
 		if strings.Contains(strings.ToLower(name), keyword) {
@@ -29,14 +29,14 @@ func isVirtualInterface(name string) bool {
 	return false
 }
 
-func getPhysicalMacAddr() (string, error) {
+func GetPhysicalMacAddr() (string, error) {
 	ifas, err := net.Interfaces()
 	if err != nil {
 		return "", err
 	}
 
 	for _, ifa := range ifas {
-		if !isVirtualInterface(ifa.Name) {
+		if !IsVirtualInterface(ifa.Name) {
 			return ifa.HardwareAddr.String(), nil
 		}
 	}
@@ -44,10 +44,10 @@ func getPhysicalMacAddr() (string, error) {
 	return "", fmt.Errorf("No physical MAC address found")
 }
 
-func getSystemInfo() DeviceInfo {
+func GetSystemInfo() DeviceInfo {
 	var info DeviceInfo
 
-	info.MacAddress, _ = getPhysicalMacAddr()
+	info.MacAddress, _ = GetPhysicalMacAddr()
 
 	// Choose the appropriate commands for RAM and CPU based on the operating system
 	var ramCmd, cpuCmd *exec.Cmd
@@ -95,7 +95,7 @@ func getSystemInfo() DeviceInfo {
 
 }
 
-func hashDeviceInfo(data DeviceInfo) (string, error) {
+func HashDeviceInfo(data DeviceInfo) (string, error) {
 	// Concatenate the strings
 	concatenatedString := data.MacAddress + data.Ram + data.Cpu + data.User + data.Path
 	fmt.Println(data.Path)
